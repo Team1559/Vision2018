@@ -6,11 +6,11 @@ import usb
 import cubeFinder
 
 
-p = PID.PID(0.0037,0,0,0,0,500,-500)
+p = PID.PID(0.0033,0,0,0,0,500,-500)
 p.setPoint(0)
 
 camera = usb.USBCamera(0)
-cube = cubeFinder.cubeFinder(camera)
+cube = cubeFinder.CubeFinder(camera)
 
 server.startServer()
 
@@ -24,8 +24,14 @@ while 1:
 	else:
 		r = 0
 	print r
+	#if cube.err > 0:
+	#	r = 0.6
+	#elif cube.err < 0:
+	#	r = -.6
 
-	server.putData(0,0,r)
+	#if abs(cube.err) <= 30:
+	#	r = 0
 
-
+	server.putData(0,0,r) 
+	
 

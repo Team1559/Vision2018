@@ -7,7 +7,7 @@ import thread
 host = "10.15.59.6"
 
 #port = 5805 #some legal port#
-port = 5801
+port = 5801 #5801
 
 lock = thread.allocate_lock()
 
@@ -24,11 +24,12 @@ class Server(object):
 		self.s.listen(5)
 
 
-	def send(self,x,y,r):
+	def send(self,xi,yi,ri):
+		#print "dad"
 		if self.c == None:
 			return
 		try:
-			self.c.send("x"+str(x)+"y"+str(y)+"r"+str(r))
+			self.c.send("x"+str(xi)+"y"+str(yi)+"r"+str(ri))
 		except socket.error:
 			pass
 
@@ -62,14 +63,15 @@ def startServer():
 
 
 def run():
+	print "lime"
 	s = Server()
-	global pdist, pangle, bdist, bangle
-	pangle = pdist = bdist = bangle = -1000
+	global x,y,r
+	x = y = r = -1000
 	while 1:
 		s.accept()
 		#r = s.receive()
 		with lock:
-			s.send(pangle, pdist, bangle, bdist)
+			s.send(x,y,r)
 			#s.receive()
 			#if(r == "s"):
 				#s.send(cx)

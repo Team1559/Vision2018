@@ -1,9 +1,9 @@
 import cv2
 import numpy as np
-import cv2
+import calc
 
 
-class cubeFinder(object):
+class CubeFinder(object):
 
     def __init__(self, Camera):
 	
@@ -23,16 +23,20 @@ class cubeFinder(object):
 
 	self.minarea = 20000
 
+	self.angle = -1000
+
+	self.frame = np.zeros((1920,1080,3), np.uint8)
+
 
     def find(self):
 	
 	self.camera.updateFrame()
-	frame = self.camera.frame
+	self.frame = self.camera.frame
 
 	self.cx = self.cy = -1
 
 	#convert to hsv
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        hsv = cv2.cvtColor(self.frame, cv2.COLOR_BGR2HSV)
         thresh = cv2.inRange(hsv, self.hsvl, self.hsvh)
 
 	threshcp = thresh.copy()
@@ -41,8 +45,8 @@ class cubeFinder(object):
 	thresh = cv2.blur(thresh, (3,3))
 
 	#erode and dilate
-	thresh = cv2.erode(thresh, (3,3))
-	thresh = cv2.dilate(thresh, (3,3))
+	thresh = cv2.erode(thresh, (1,1))
+	thresh = cv2.dilate(thresh, (1,1))
 
 	
 
@@ -57,18 +61,24 @@ class cubeFinder(object):
         for cnt in contours:
 
 		#print cv2.contourArea(cnt)
+		#print cv2.isContourConvex(cnt)
 
         	if cv2.contourArea(cnt) < self.minarea:
         		continue
+
+		#approx = cv2.approxPolyDP(cnt,0.01*cv2.arcLength(cnt,True),True)
+	        #print len(approx)
 		
 		best_cnt = cnt
 		break
 		
 
+	
+
 	if best_cnt == None:
 	    self.found = False
 	    self.cx = self.cy = -1
-	    self.err = -1000
+	    self.err = self.angle = -1000
 	else:
 	    self.found = True
 
@@ -77,9 +87,11 @@ class cubeFinder(object):
 
 	    self.err = self.cx-(self.width/2)
 
-	    cv2.circle(frame,(self.cx,self.cy),5,255,-1)
+	    self.angle = calc.getAngle(self.err)
 
-	cv2.imshow("frame", frame)
+	    cv2.circle(self.frame,(self.cx,self.cy),5,255,-1)
+
+	cv2.imshow("frame", self.frame)
 	cv2.imshow("hsv", threshcp)
 	cv2.waitKey(1)
 

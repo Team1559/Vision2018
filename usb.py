@@ -21,7 +21,7 @@ class USBCamera(object):
 	#self.appsink.set_property("max-buffers", 1)
 	#self.appsink.set_property("drop", True)
 
-	self.cap = cv2.VideoCapture(0)
+	self.cap = cv2.VideoCapture(index)
 	self.frame = np.zeros((720,480,3), np.uint8)
 
 
