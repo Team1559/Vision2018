@@ -24,12 +24,11 @@ class Server(object):
 		self.s.listen(5)
 
 
-	def send(self,xi,yi,ri):
-		#print "dad"
+	def send(self,ti,ai,di):
 		if self.c == None:
 			return
 		try:
-			self.c.send("x"+str(xi)+"y"+str(yi)+"r"+str(ri))
+			self.c.send("c"+str(ti)+"a"+str(ai)+"d"+str(di))
 		except socket.error:
 			pass
 
@@ -63,25 +62,39 @@ def startServer():
 
 
 def run():
-	print "lime"
+	#print "lime"
 	s = Server()
-	global x,y,r
-	x = y = r = -1000
+	global t, a, d
+	a = -1000
+	d = 0
+	t = "no target"
+
+	global data
+	data = "none"
+
 	while 1:
 		s.accept()
-		#r = s.receive()
+		data = s.receive()
 		with lock:
-			s.send(x,y,r)
-			#s.receive()
-			#if(r == "s"):
+			s.send(t,a,d)
+			#try:
+			#	data = s.receive()
+			#except:
+			#	return
+			#s.send(t,a,d)
+			#if(data == "s"):
 				#s.send(cx)
 		s.close()
 
 
-def putData(xi, yi, ri):
-	global x, y, r
+def putData(target, angle, distance):
+	#global t, a, d
 	with lock:
-            x = xi
-	    y = yi
-            r = ri
+            t = target
+	    a = angle
+            d = distance
+
+def getData():
+
+	return data
 

@@ -10,8 +10,10 @@ import LEDFinder
 #p.setPoint(0)
 
 camera = usb.USBCamera(0)
+#camera.setExposure(9)
 led = LEDFinder.LEDFinder(camera)
 led.setRed()
+#led.setBlue()
 
 #server.startServer()
 
@@ -21,7 +23,10 @@ while 1:
 	led.find()	
 	led.calculateConfidence()
 
-	print led.confidence
+	cv2.imshow("frame", led.frame)
+	cv2.waitKey(1)
+
+	#print led.confidence
 	
 	#print led.err	
 

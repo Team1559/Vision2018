@@ -18,7 +18,7 @@ class Stereo(object):
 		self.errR = -1000
 
 		self.errorAngle = -1000
-		self.distanceToTarget = -1000
+		self.distanceToTarget = 0
 
 		self.length = length
 
@@ -29,7 +29,8 @@ class Stereo(object):
 
 	def track(self):
 
-		self.errL = self.errR = self.errorAngle = self.distanceToTarget = -1000
+		self.errL = self.errR = self.errorAngle = -1000
+		self.distanceToTarget = 0
 		
 		for finder in self.finders:
 			finder.find()
@@ -56,11 +57,15 @@ class LEDStereo(object): #it's like a normal stereo, but with color and confiden
 	def __init__(self, cameraR, cameraL, length):
 
 		self.finderR = LEDFinder.LEDFinder(cameraR)
-		self.finderL = LEDFinder(cameraL)
+		self.finderL = LEDFinder.LEDFinder(cameraL)
 
 		self.stereo = Stereo(self.finderR, self.finderL, length)
 
 		self.confidence = "n" #n,w,r,l
+
+		self.angle = -1000
+		self.distance = 0
+
 
 	def setRed(self):
 
@@ -72,7 +77,52 @@ class LEDStereo(object): #it's like a normal stereo, but with color and confiden
 		self.finderR.setBlue()
 		self.finderL.setBlue()
 
+	def getColor(self):
+
+		return finderR.color
+
+
 	def track(self):
 
 		self.stereo.track()
-		#do some math with the confidence and other fun stuff#
+		#do some more math with the confidence and other fun stuff#
+		self.angle = self.stereo.errorAngle
+		self.distance = self.stereo.distanceToTarget
+
+
+		#print self.finderR.confidence
+
+		if self.finderR.confidence is "w" and self.finderL.confidence is "w":
+			self.confidence = "w"
+		elif self.finderR.confidence is "r" and self.finderL.confidence is "r":
+			self.confidence = "r"
+		elif self.finderR.confidence is "l" and self.finderL.confidence is "l":
+			self.confidence = "l"
+		else:
+			self.confidence = "n"
+
+		print self.confidence
+
+
+
+class CubeStereo(object):
+
+	def __init__(self, cameraR, cameraL, length):
+	
+		self.finderR = cubeFinder.CubeFinder(cameraR)
+		self.finderR = cubeFinder.CubeFinder(cameraR)
+
+		self.angle = -1000
+		self.distance = 0
+
+		self.stereo = Stereo(finderR, finderL, length)
+
+
+	def track(self):
+
+		self.stereo.track()
+
+		self.angle = self.stereo.errorAngle
+		self.distance = self.stereo.distanceToTarget
+
+		print self.angle

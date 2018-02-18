@@ -13,7 +13,7 @@ class CubeFinder(object):
 	self.cy = -1
 	self.err = -1000
 
-	self.hsvl = np.array((15,0,10))
+	self.hsvl = np.array((15,0,50))
 	self.hsvh = np.array((30,255,255))
 
 	self.width = 640
@@ -45,9 +45,10 @@ class CubeFinder(object):
 	thresh = cv2.blur(thresh, (3,3))
 
 	#erode and dilate
-	thresh = cv2.erode(thresh, (1,1))
-	thresh = cv2.dilate(thresh, (1,1))
+	thresh = cv2.erode(thresh, (3,3))
+	thresh = cv2.dilate(thresh, (3,3))
 
+	threshcp = thresh.copy()
 	
 
         #find some contours
@@ -91,9 +92,9 @@ class CubeFinder(object):
 
 	    cv2.circle(self.frame,(self.cx,self.cy),5,255,-1)
 
-	cv2.imshow("frame", self.frame)
-	cv2.imshow("hsv", threshcp)
-	cv2.waitKey(1)
+	#cv2.imshow("frame", self.frame)
+	#cv2.imshow("hsv", threshcp)
+	#cv2.waitKey(1)
 
 
 

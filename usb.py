@@ -37,3 +37,9 @@ class USBCamera(object):
 	
 	_,self.frame = self.cap.read()
 
+
+    #doesnt work#
+    def setExposure(self, value):
+
+	self.cap.set(16, value)
+
